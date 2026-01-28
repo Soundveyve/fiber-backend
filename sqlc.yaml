@@ -1,0 +1,26 @@
+version: "2"
+# Конфигурация sqlc для генерации Go кода из SQL запросов
+
+sql:
+  - schema: "migrations/"  # Путь к миграциям (схема БД)
+    queries: "queries/"     # Путь к SQL запросам
+    engine: "postgresql"    # Движок БД (postgresql, mysql)
+    gen:
+      go:
+        package: "repository"  # Имя Go пакета для сгенерированного кода
+        out: "internal/repository"  # Директория для сгенерированных файлов
+        sql_package: "pgx/v5"  # SQL пакет для использования
+        
+        # Настройки генерации
+        emit_json_tags: true  # Добавить json теги к структурам
+        emit_db_tags: true    # Добавить db теги к структурам
+        emit_prepared_queries: false  # Не использовать prepared statements
+        emit_interface: true  # Генерировать интерфейс для моков
+        emit_exact_table_names: false  # Использовать CamelCase имена
+        emit_empty_slices: true  # Возвращать пустые срезы вместо nil
+        
+        # Переименования для лучшей читаемости
+        rename:
+          id: "ID"
+          email: "Email"
+          username: "Username"

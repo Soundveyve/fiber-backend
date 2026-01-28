@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PostgreSQL база данных
+  postgres:
+    image: postgres:15-alpine
+    container_name: fiber_postgres
+    environment:
+      # Эти переменные используются для инициализации БД
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fiber_db
+    ports:
+      # Пробрасываем порт наружу для доступа с хоста
+      - "5432:5432"
+    volumes:
+      # Сохраняем данные БД на хосте, чтобы они не терялись при пересоздании контейнера
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fiber_network
+    # Проверка здоровья контейнера
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MySQL (альтернативная БД, закомментирована по умолчанию)
+  # Раскомментируйте, если захотите использовать MySQL вместо PostgreSQL
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: fiber_mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: fiber_db
+  #     MYSQL_USER: fiber
+  #     MYSQL_PASSWORD: fiber
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - fiber_network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Основное приложение (раскомментируйте когда будет готов Dockerfile)
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: fiber_app
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   networks:
+  #     - fiber_network
+
+# Определяем volumes для персистентности данных
+volumes:
+  postgres_data:
+    driver: local
+  # mysql_data:
+  #   driver: local
+
+# Создаем отдельную сеть для изоляции сервисов
+networks:
+  fiber_network:
+    driver: bridge

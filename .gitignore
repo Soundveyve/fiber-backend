@@ -1,0 +1,39 @@
+# Бинарные файлы
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Тестовые файлы
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Зависимости
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Переменные окружения
+.env
+.env.local
+.env.production
+
+# Логи
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Временные файлы
+tmp/
+temp/
